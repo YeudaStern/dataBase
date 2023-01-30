@@ -9,7 +9,7 @@ const CommentsSchema = new mongoose.Schema({
     }
 })
 
-exports.CommentsModel = mongoose.model("files", CommentsSchema);
+exports.CommentsModel = mongoose.model("comments", CommentsSchema);
 
 exports.validateComments = (_reqBody) => {
     let joiSchema = Joi.object({
