@@ -4,7 +4,7 @@ const { CommentsModel, validateComments } = require("../models/commentsModel")
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    res.json({ msg: "files work" });
+    res.json({ msg: "Comments work" });
 })
 
 
