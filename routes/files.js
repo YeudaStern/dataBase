@@ -39,7 +39,7 @@ router.put("/:id", auth, async (req, res) => {
     if (req.tokenData.role == "admin") {
       data = await FileModel.updateOne({ _id: id }, req.body);
     }
-  
+
     else {
       data = await FileModel.updateOne({ _id: id, user_id: req.tokenData._id }, req.body);
     }

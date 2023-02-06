@@ -1,5 +1,5 @@
 const express = require("express");
-const { authAdmin } = require("../middlewares/auth");
+const { authAdmin , authConstructor} = require("../middlewares/auth");
 const { validateProject, ProjectModel } = require("../models/projectsModel")
 const router = express.Router();
 
@@ -8,7 +8,59 @@ router.get("/", async (req, res) => {
 })
 
 
-//TODO:לעשות גט וחיפוש של משתמשים
+//!Only admin can see all projects 
+router.get("/allProjects", authAdmin,async (req, res) => {
+
+  let perPage = Math.min(req.query.perPage, 20) || 5;
+  let page = req.query.page - 1 || 0;
+  let sort = req.query.sort || "_id"
+
+  let reverse = req.query.reverse == "yes" ? 1 : -1
+  try {
+    let data = await ProjectModel
+      .find({})
+  
+      .limit(perPage)
+    
+      .skip(page * perPage)
+      
+      .sort({ [sort]: reverse })
+
+    
+    res.json(data);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(502).json({ err })
+  }
+})
+
+// !Construcror can see only his projects
+router.get("/constructorProjects", authConstructor,async (req, res) => {
+
+  let perPage = Math.min(req.query.perPage, 20) || 5;
+  let page = req.query.page - 1 || 0;
+  let sort = req.query.sort || "_id"
+
+  let reverse = req.query.reverse == "yes" ? 1 : -1
+  try {
+    let data = await ProjectModel
+      .find({})
+  
+      .limit(perPage)
+    
+      .skip(page * perPage)
+      
+      .sort({ [sort]: reverse })
+
+    
+    res.json(data);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(502).json({ err })
+  }
+})
 
 // Create a new projecrs, and only "admin" can add new.
 router.post("/", authAdmin, async (req, res) => {

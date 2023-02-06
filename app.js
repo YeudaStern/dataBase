@@ -6,7 +6,7 @@ const path = require("path");
 // Create an HTTP server that listens to server ports and gives a response back to the client.
 const http = require("http");
 
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 const cors = require("cors");
 
@@ -24,7 +24,7 @@ app.use(cors());
 app.use(express.json());
 
 
-var sess = {
+const sess = {
   secret: 'keyboard cat',
   cookie: {}
 }

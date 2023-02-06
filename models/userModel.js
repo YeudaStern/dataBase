@@ -32,9 +32,6 @@ exports.validateUser = (_reqBody) => {
     email: Joi.string().min(2).max(150).email().required(),
     phone: Joi.string().min(2).max(150).required(),
     password: Joi.string().min(3).max(150).required(),
-    date_created: {
-      type: Date, default: Date.now
-    },
     company: Joi.string().min(2).max(150).allow(null,"")
   })
   return joiSchema.validate(_reqBody);

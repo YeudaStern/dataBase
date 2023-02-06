@@ -5,7 +5,7 @@ const express = require("express");
 // 
 const bcrypt = require("bcrypt");
 // password encryption
-const { auth } = require("../middlewares/auth")
+const { auth, authAdmin } = require("../middlewares/auth")
 
 const { UserModel, validateUser, validateLogin, createToken } = require("../models/userModel")
 
@@ -22,6 +22,32 @@ router.get("/userInfo", auth, async (req, res) => {
   try {
     let user = await UserModel.findOne({ _id: req.tokenData._id }, { password: 0 });
     res.json(user);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(502).json({ err })
+  }
+})
+
+
+
+router.get("/allUsers", authAdmin, async (req, res) => {
+
+  let perPage = Math.min(req.query.perPage, 20) || 5;
+  let page = req.query.page - 1 || 0;
+  let sort = req.query.sort || "_id"
+
+  let reverse = req.query.reverse == "yes" ? 1 : -1
+  try {
+    let data = await UserModel
+      .find({})
+
+      .limit(perPage)
+
+      .skip(page * perPage)
+
+      .sort({ [sort]: reverse })
+    res.json(data);
   }
   catch (err) {
     console.log(err);
@@ -64,21 +90,21 @@ router.post("/logIn", async (req, res) => {
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);
   }
- 
+
   try {
-  // check if the email is in the sistem
+    // check if the email is in the sistem
     let user = await UserModel.findOne({ email: req.body.email })
     if (!user) {
       return res.status(401).json({ msg: "Email Worng." })
     }
-// Check if the password is correct
+    // Check if the password is correct
     let validPassword = await bcrypt.compare(req.body.password, user.password);
     if (!validPassword) {
       return res.status(401).json({ msg: "Password Worng." })
     }
-      req.session.user = user;
+    req.session.user = user;
 
-      // create a token key for the user
+    // create a token key for the user
     let token = createToken(user._id, user.role)
 
     res.json({ token })

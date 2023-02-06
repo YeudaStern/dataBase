@@ -18,5 +18,14 @@ exports.authAdmin = (req, res, next) => {
     return res.status(401).json({ msg: "Just admin can be in this endpoint" });
   }
   next()
+}
+
+
+exports.authConstructor = (req, res, next) => {
+
+  if(req.session.user && req.session.user.role != "constructor"){
+    return res.status(401).json({ msg: "Just constructor can be in this endpoint" });
+  }
+  next()
 
 }
