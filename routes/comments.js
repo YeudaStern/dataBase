@@ -8,6 +8,9 @@ router.get("/", async (req, res) => {
 })
 
 
+//! Show all comments by project
+
+
 router.post("/", auth, async (req, res) => {
     let validBody = validateComments(req.body);
     if (validBody.error) {

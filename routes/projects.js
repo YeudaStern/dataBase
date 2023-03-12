@@ -1,5 +1,5 @@
 const express = require("express");
-const { authAdmin , authConstructor} = require("../middlewares/auth");
+const { authAdmin, authConstructor } = require("../middlewares/auth");
 const { validateProject, ProjectModel } = require("../models/projectsModel")
 const router = express.Router();
 
@@ -7,36 +7,11 @@ router.get("/", async (req, res) => {
   res.json({ msg: "Project info work" });
 })
 
+//! to do - user can see only is projects !!
 
-//!Only admin can see all projects 
-router.get("/allProjects", authAdmin,async (req, res) => {
 
-  let perPage = Math.min(req.query.perPage, 20) || 5;
-  let page = req.query.page - 1 || 0;
-  let sort = req.query.sort || "_id"
-
-  let reverse = req.query.reverse == "yes" ? 1 : -1
-  try {
-    let data = await ProjectModel
-      .find({})
-  
-      .limit(perPage)
-    
-      .skip(page * perPage)
-      
-      .sort({ [sort]: reverse })
-
-    
-    res.json(data);
-  }
-  catch (err) {
-    console.log(err);
-    res.status(502).json({ err })
-  }
-})
-
-// !Construcror can see only his projects
-router.get("/constructorProjects", authConstructor,async (req, res) => {
+//?Only admin can see all projects 
+router.get("/allProjects", authAdmin, async (req, res) => {
 
   let perPage = Math.min(req.query.perPage, 20) || 5;
   let page = req.query.page - 1 || 0;
@@ -46,14 +21,14 @@ router.get("/constructorProjects", authConstructor,async (req, res) => {
   try {
     let data = await ProjectModel
       .find({})
-  
+
       .limit(perPage)
-    
+
       .skip(page * perPage)
-      
+
       .sort({ [sort]: reverse })
 
-    
+
     res.json(data);
   }
   catch (err) {
@@ -62,7 +37,34 @@ router.get("/constructorProjects", authConstructor,async (req, res) => {
   }
 })
 
-// Create a new projecrs, and only "admin" can add new.
+// ?Construcror can see only his projects
+router.get("/constructorProjects", authConstructor, async (req, res) => {
+
+  let perPage = Math.min(req.query.perPage, 20) || 5;
+  let page = req.query.page - 1 || 0;
+  let sort = req.query.sort || "_id"
+
+  let reverse = req.query.reverse == "yes" ? 1 : -1
+  try {
+    let data = await ProjectModel
+      .find({})
+
+      .limit(perPage)
+
+      .skip(page * perPage)
+
+      .sort({ [sort]: reverse })
+
+
+    res.json(data);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(502).json({ err })
+  }
+})
+
+//? Create a new projecrs, and only "admin" can add new.
 router.post("/", authAdmin, async (req, res) => {
   if (!req.session.user) {
     return res.status(301).json({ msg: "user not valid" })
@@ -89,7 +91,7 @@ router.post("/", authAdmin, async (req, res) => {
 })
 
 
-// All the users can edit the projects
+//? All the users can edit the projects
 router.put("/:id", async (req, res) => {
   if (!req.session.user) {
     return res.status(301).json({ msg: 'user is nod log in...' })
@@ -114,8 +116,10 @@ router.put("/:id", async (req, res) => {
   }
 })
 
+//! edit project by user id 
 
-// Just admin can deleted the project
+
+//? Just admin can deleted the project
 router.delete("/:id", authAdmin, async (req, res) => {
   try {
     let id = req.params.id;

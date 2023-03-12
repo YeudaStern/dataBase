@@ -6,6 +6,7 @@ const FileSchema = new mongoose.Schema({
   project_id: String,
   user_id: String,
   info: String,
+  file_url: String,
   date_created: {
     type: Date, default: Date.now
   }
