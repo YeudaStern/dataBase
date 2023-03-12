@@ -1,5 +1,5 @@
 const express = require("express");
-const { authAdmin, authConstructor } = require("../middlewares/auth");
+const { authAdmin, authConstructor, auth } = require("../middlewares/auth");
 const { validateProject, ProjectModel } = require("../models/projectsModel")
 const router = express.Router();
 
@@ -37,6 +37,36 @@ router.get("/allProjects", authAdmin, async (req, res) => {
   }
 })
 
+//?User can see only his projects
+router.get("/costumerProjects", auth, async (req, res) => {
+
+  let perPage = Math.min(req.query.perPage, 20) || 5;
+  let page = req.query.page - 1 || 0;
+  let sort = req.query.sort || "_id"
+  const costumerId = req.session.user._id;
+
+  let reverse = req.query.reverse == "yes" ? 1 : -1
+  try {
+    let data = await ProjectModel
+      .find({users_id : costumerId})
+
+      .limit(perPage)
+
+      .skip(page * perPage)
+
+      .sort({ [sort]: reverse })
+
+
+    res.json(data);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(502).json({ err })
+  }
+})
+
+
+
 // ?Construcror can see only his projects
 router.get("/constructorProjects", authConstructor, async (req, res) => {
 
@@ -44,10 +74,12 @@ router.get("/constructorProjects", authConstructor, async (req, res) => {
   let page = req.query.page - 1 || 0;
   let sort = req.query.sort || "_id"
 
+  const constructorId = req.session.user._id;
+
   let reverse = req.query.reverse == "yes" ? 1 : -1
   try {
     let data = await ProjectModel
-      .find({})
+      .find({user_manager_id : constructorId})
 
       .limit(perPage)
 

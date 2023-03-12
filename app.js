@@ -6,6 +6,8 @@ const path = require("path");
 // Create an HTTP server that listens to server ports and gives a response back to the client.
 const http = require("http");
 
+require('dotenv').config();
+
 const bodyParser = require('body-parser');
 
 const cors = require("cors");
@@ -45,6 +47,6 @@ routesInit(app);
 
 const server = http.createServer(app);
 
-let port = process.env.PORT || 3002;
+let port = process.env.PORT;
 
 server.listen(port);

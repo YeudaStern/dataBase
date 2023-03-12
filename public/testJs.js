@@ -41,3 +41,10 @@ async function createProject() {
     console.log(projects);
     $('#results').html(JSON.stringify(projects, null, '\t'));
 }
+
+async function costumerProjects() {
+
+    let projects = await doAjax(`/projects/costumerProjects`, null, `GET`)
+    console.log(projects);
+    $('#results').html(JSON.stringify(projects, null, '\t'));
+}
