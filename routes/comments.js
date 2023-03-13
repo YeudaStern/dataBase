@@ -1,5 +1,5 @@
 const express = require("express");
-const { auth } = require("../middlewares/auth");
+const { auth, authAdmin } = require("../middlewares/auth");
 const { CommentsModel, validateComments } = require("../models/commentsModel")
 const router = express.Router();
 
@@ -9,6 +9,34 @@ router.get("/", async (req, res) => {
 
 
 //! Show all comments by project
+
+router.get("/allComments", auth, async (req, res) => {
+
+    let perPage = Math.min(req.query.perPage, 20) || 5;
+    let page = req.query.page - 1 || 0;
+    let sort = req.query.sort || "_id"
+
+    const projectId = req.session.project._id;
+
+    let reverse = req.query.reverse == "yes" ? 1 : -1
+    try {
+        let data = await CommentsModel
+            .find({ project_id: projectId })
+
+            .limit(perPage)
+
+            .skip(page * perPage)
+
+            .sort({ [sort]: reverse })
+
+
+        res.json(data);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(502).json({ err })
+    }
+})
 
 
 

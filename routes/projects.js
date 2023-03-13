@@ -7,8 +7,6 @@ router.get("/", async (req, res) => {
   res.json({ msg: "Project info work" });
 })
 
-//! to do - user can see only is projects !!
-
 
 //?Only admin can see all projects 
 router.get("/allProjects", authAdmin, async (req, res) => {
@@ -37,12 +35,13 @@ router.get("/allProjects", authAdmin, async (req, res) => {
   }
 })
 
-//?User can see only his projects
+//?Costumer can see only his projects
 router.get("/costumerProjects", auth, async (req, res) => {
 
   let perPage = Math.min(req.query.perPage, 20) || 5;
   let page = req.query.page - 1 || 0;
   let sort = req.query.sort || "_id"
+  
   const costumerId = req.session.user._id;
 
   let reverse = req.query.reverse == "yes" ? 1 : -1

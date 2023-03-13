@@ -33,7 +33,6 @@ async function createProject() {
     let params = {
         "p_name": $('#project_name').val(),
         "info": "adfgjkvhwdbwbg",
-        "users_id":["12334"],
         "user_manager_id" :"1234"
       
     };
